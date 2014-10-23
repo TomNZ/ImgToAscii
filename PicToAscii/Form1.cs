@@ -89,7 +89,6 @@ namespace PicToAscii
 
             var brightnessKeys = _brightnesses.Keys.ToList();
             brightnessKeys.Sort();
-            brightnessKeys.Reverse();
 
             // Produce the string
             // NOTE: This is currently SUPER inefficient - can probably be optimized
@@ -105,9 +104,9 @@ namespace PicToAscii
                         // Some finnicky math to convert brightness based
                         // on the "most dense" character's actual brightness
                         var brightnessKeyActual = (brightnessKey - _minBrightness) / (1 - _minBrightness);
-                        if (brightness > brightnessKeyActual)
+                        if (brightnessKeyActual > brightness)
                         {
-                            output.Append((char)_brightnesses[brightnessKey]);
+                            output.Append(char.ConvertFromUtf32(_brightnesses[brightnessKey]));
                             foundChar = true;
                             break;
                         }
@@ -164,7 +163,7 @@ namespace PicToAscii
                 graphics.FillRectangle(new SolidBrush(Color.White), new Rectangle(0, 0, bitmap.Width, bitmap.Height));
 
                 // Draw the letter
-                graphics.DrawString(((char)id).ToString(), font, new SolidBrush(Color.Black), 0, 0);
+                graphics.DrawString((char.ConvertFromUtf32(id)).ToString(), font, new SolidBrush(Color.Black), 0, 0);
 
                 // Determine average pixel brightness as "density"
                 double totalBrightness = 0;
